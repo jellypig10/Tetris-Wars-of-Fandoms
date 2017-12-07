@@ -15,23 +15,30 @@ class Button:
     x = 0
     y = 0
     
-    def __init__(self,imgUp,imgDown,imgOver,x,y):
+    def __init__(self,imgUp,imgDown,imgOver,x,y,clickAction): 
         self.imgUp = imgUp
         self.imgDown = imgDown
         self.imgOver = imgOver
         self.x = x
         self.y = y
         self.image =self.imgUp
-    
+        self.clickAction = clickAction
+        
+    def click(self):
+            self.clickAction()
+        
     def getCollider(self):
-        return self.image.get_rect()
+        rect = self.image.get_rect()
+        rect.x = self.x
+        rect.y = self.y
+        return rect
     
     def mouseOver(self):
-        self.image = self.img.Over
+        self.image = self.imgOver
         self.state = False
         
     def mouseDown(self):
-        self,image = self.imgDown
+        self.image = self.imgDown
         self.state = True
         
     def mouseOut(self):
@@ -82,22 +89,25 @@ class Game:
         buttonSpriteSheet = SpriteSheet("button-start-spritesheet.png")
         #200,72
         buttonUp = buttonSpriteSheet.get_image(0,0,200,72)
-        buttonOver = buttonSpriteSheet.get_image(0,72,200,72)
-        buttonDown = buttonSpriteSheet.get_image(0,144,200,72)
+        buttonDown = buttonSpriteSheet.get_image(0,72,200,72)
+        buttonOver = buttonSpriteSheet.get_image(0,144,200,72)
         centerX = self.WINDOWWIDTH/2
         centerY = self.WINDOWHEIGHT/2
         buttonRect = buttonUp.get_rect()
         buttonWidth = buttonRect.width
         buttonHeight = buttonRect.height
-        buttonCenterX = centerX/2-buttonWidth/2
-        buttonCenterY = centerY/2-buttonHeight/2
+        buttonCenterX = centerX-buttonWidth/2
+        buttonCenterY = centerY-buttonHeight/2
+        def clicked():
+            print("It Worked!!!")
         
-        self.startButtion = Button(
-            buttonUp,buttonOver,buttonDown,buttonCenterX,buttonCenterY)
+        
+        self.startButton = Button(
+            buttonUp,buttonOver,buttonDown,buttonCenterX,buttonCenterY,clicked)
         ##########GAME LOOP##########
         while self.playing:
             delta = self.clock.tick(self.FRAMERATE)
-            
+            self.startButton.update()
             ##########EVENT HANDLING##########
             for event in pygame.event.get():
                 if event.type==QUIT:
@@ -111,7 +121,7 @@ class Game:
         
     def draw(self):
             self.surface.fill(self.BGCOLOR)
-            self.startButtion.draw(self.surface)        
+            #self.startButton.draw(self.surface)        
 if __name__=="__main__":
     game = Game()
     game.main()
