@@ -1,122 +1,71 @@
 '''
-Created on Feb 1, 2018
-
+Created on Nov 16, 2017
 @author: student
 '''
-'''
-@author:21_Century_RavenRen 
-'''
+import pygame
 
-import pygame, sys, os, math
-from SpriteHelper import SpriteSheet
-from pygame.locals import *
-from random import randint
+class SpriteSheet(object):
+    """ Class used to grab images out of a sprite sheet. """
+    # Colors
+    BLACK    = (   0,   0,   0) 
+    WHITE    = ( 255, 255, 255) 
+    BLUE     = (   0,   0, 255)
+ 
+    def __init__(self, file_name):
+        """ Constructor. Pass in the file name of the sprite sheet. """
+ 
+        # Load the sprite sheet.
+        self.sprite_sheet = pygame.image.load(file_name).convert()
+ 
+ 
+    def get_image(self, x, y, width, height):
+        """ Grab a single image out of a larger spritesheet
+            Pass in the x, y location of the sprite
+            and the width and height of the sprite. """
+ 
+        # Create a new blank image
+        image = pygame.Surface([width, height]).convert()
+ 
+        # Copy the sprite from the large sheet onto the smaller image
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+ 
+        # Assuming black works as the transparent color
+        image.set_colorkey(self.BLACK)
+ 
+        # Return the image
+        return image
 
-class Button:
-    imgUp = None
-    imgDown = None
-    imgOver = None
-    state = False
-    x = 0
-    y = 0
-
-    def __init__(self,imgUp,imgDown,imgOver,x,y):
-        self.imgUp = imgUp
-        self.imgDown = imgDown
-        self.imgOver = imgOver
-        self.x = x
-        self.y = y
-        self.image = self.imgUp
+class UniformSpriteSheet(object):
+    """ Class used to grab images out of a sprite sheet. """
+ 
+    def __init__(self, file_name,width,height):
+        """ Constructor. Pass in the file name of the sprite sheet. """
         
-    def getCollider(self):
-        rect = self.image.get_rect()
-        rect.x = self.x
-        rect.y = self.y
-        return rect
-    
-    def mouseOver(self):
-        self.image = self.imgOver
-        self.state = False
-        
-    def mouseDown(self):
-        self.image = self.imgDown
-        self.state = True
-        
-    def mouseOut(self):
-        self.image = self.imgUp
-        self.state = False
-        
-        
-    def update(self):
-        collider = self.getCollider()
-        mouseLoc = pygame.mouse.get_pos()
-        mouseLoc = pygame.Rect(mouseLoc[0],mouseLoc[1],5,5)
-        mouseState = pygame.mouse.get_pressed()
-        if collider.colliderect(mouseLoc):
-            if mouseState[0]:
-                self.mouseDown()
-            else:
-                if self.state==True:
-                    self.state = False
-                    self.click()
-                self.mouseOver()
-        else:
-            self.mouseOut()
-    
-    def draw(self,surface):
-        surface.blit(self.image,(self.x,self.y))
-        
-class Game:
-    #####Variable#####
-    WINDOWWIDTH = 1024
-    WINDOWHEIGHT = 768
-    GAMENAME = "TETRIS: War of the Fandoms"
-    FRAMERATE = 60
-    BGCOLOR = (128,0,0)
-    playing = True
-    
-    #####Constructor#####
-    def __init__(self):
-        pygame.init()
-        self.clock = pygame.time.Clock()
-        self.surface = pygame.display.set_mode(
-            (self.WINDOWWIDTH, self.WINDOWHEIGHT))
-        pygame.display.set_caption(self.GAMENAME)
-        
-    def main(self):
-        buttonSpriteSheet = SpriteSheet("button-start-spritesheet.png")
-        buttonUp = buttonSpriteSheet.get_image(0,0,200,72)
-        buttonDown = buttonSpriteSheet.get_image(0,72,200,72)
-        buttonOver = buttonSpriteSheet.get_image(0,144,200,72)
-        centerX = self.WINDOWWIDTH/2
-        centerY = self.WINDOWHEIGHT/2
-        buttonRect = buttonUp.get_rect()
-        buttonWidth = buttonRect.width
-        buttonHeight = buttonRect.height
-        buttonCenterX = centerX-buttonWidth/2
-        buttonCenterY = centerY-buttonHeight/2
-        
-        self.startButton = Button(
-            buttonUp,buttonOver,buttonDown,buttonCenterX,buttonCenterY)
-        #####Game Loop#####
-        while self.playing:
-            delta=self.clock.tick(self.FRAMERATE)
-            self.startButton.update()
-                        #####Event Handeling#####
-            for event in pygame.event.get():
-                if event.type==QUIT:
-                    self.quit()
-            self.draw()
-            pygame.display.flip()
-   
-    def quit(self):
-        pygame.quit()
-        sys.exit()
-    
-    def draw(self):
-        self.surface.fill(self.BGCOLOR)
-        self.startButton.draw(self.surface)
-        
-if __name__=="__main__":
-        game = Game()
-        game.main()
+        # Colors
+        BLACK    = (   0,   0,   0) 
+        WHITE    = ( 255, 255, 255) 
+        BLUE     = (   0,   0, 255)
+         
+        # Load the sprite sheet.
+        self.sprite_sheet = pygame.image.load(file_name).convert()
+        self.width = width
+        self.height = height
+ 
+ 
+    def get_image(self, x, y):
+        """ Grab a single image out of a larger spritesheet
+            Pass in the x, y location of the sprite
+            and the width and height of the sprite. """
+        # Create a new blank image
+        x = x*width
+        y = y*width
+        image = pygame.Surface([self.width, self.height]).convert()
+ 
+        # Copy the sprite from the large sheet onto the smaller image
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+ 
+        # Assuming black works as the transparent color
+        image.set_colorkey(self.BLACK)
+ 
+        # Return the image
+        return image
