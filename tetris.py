@@ -1,9 +1,14 @@
 '''
-@author: Tyler Mullins
+Created on Feb 1, 2018
+
+@author: student
+'''
+'''
+@author:21_Century_RavenRen 
 '''
 
 import pygame, sys, os, math
-from spriteHelper import SpriteSheet
+from SpriteHelper import SpriteSheet
 from pygame.locals import *
 from random import randint
 
@@ -14,18 +19,14 @@ class Button:
     state = False
     x = 0
     y = 0
-    
-    def __init__(self,imgUp,imgDown,imgOver,x,y,clickAction): 
+
+    def __init__(self,imgUp,imgDown,imgOver,x,y):
         self.imgUp = imgUp
         self.imgDown = imgDown
         self.imgOver = imgOver
         self.x = x
         self.y = y
-        self.image =self.imgUp
-        self.clickAction = clickAction
-        
-    def click(self):
-            self.clickAction()
+        self.image = self.imgUp
         
     def getCollider(self):
         rect = self.image.get_rect()
@@ -45,14 +46,14 @@ class Button:
         self.image = self.imgUp
         self.state = False
         
+        
     def update(self):
-        #check if mouse is over button
         collider = self.getCollider()
         mouseLoc = pygame.mouse.get_pos()
         mouseLoc = pygame.Rect(mouseLoc[0],mouseLoc[1],5,5)
-        mouseSate = pygame.mouse.get_pressed()
+        mouseState = pygame.mouse.get_pressed()
         if collider.colliderect(mouseLoc):
-            if mouseSate[0]:
+            if mouseState[0]:
                 self.mouseDown()
             else:
                 if self.state==True:
@@ -61,33 +62,29 @@ class Button:
                 self.mouseOver()
         else:
             self.mouseOut()
-        #check if mouse button is down                  
     
     def draw(self,surface):
         surface.blit(self.image,(self.x,self.y))
-
-
-
+        
 class Game:
-    ##########VARIABLES##########
+    #####Variable#####
     WINDOWWIDTH = 1024
     WINDOWHEIGHT = 768
-    GAMENAME = "Tetris War of The Fandoms"
+    GAMENAME = "TETRIS: War of the Fandoms"
     FRAMERATE = 60
-    BGCOLOR = (255,255,255)
+    BGCOLOR = (128,0,0)
     playing = True
     
-    ##########CONSTRUCTOR##########
+    #####Constructor#####
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode(
-            (self.WINDOWWIDTH,self.WINDOWHEIGHT))
+            (self.WINDOWWIDTH, self.WINDOWHEIGHT))
         pygame.display.set_caption(self.GAMENAME)
         
     def main(self):
         buttonSpriteSheet = SpriteSheet("button-start-spritesheet.png")
-        #200,72
         buttonUp = buttonSpriteSheet.get_image(0,0,200,72)
         buttonDown = buttonSpriteSheet.get_image(0,72,200,72)
         buttonOver = buttonSpriteSheet.get_image(0,144,200,72)
@@ -98,30 +95,28 @@ class Game:
         buttonHeight = buttonRect.height
         buttonCenterX = centerX-buttonWidth/2
         buttonCenterY = centerY-buttonHeight/2
-        def clicked():
-            print("It Worked!!!")
-        
         
         self.startButton = Button(
-            buttonUp,buttonOver,buttonDown,buttonCenterX,buttonCenterY,clicked)
-        ##########GAME LOOP##########
+            buttonUp,buttonOver,buttonDown,buttonCenterX,buttonCenterY)
+        #####Game Loop#####
         while self.playing:
-            delta = self.clock.tick(self.FRAMERATE)
+            delta=self.clock.tick(self.FRAMERATE)
             self.startButton.update()
-            ##########EVENT HANDLING##########
+                        #####Event Handeling#####
             for event in pygame.event.get():
                 if event.type==QUIT:
                     self.quit()
             self.draw()
-            pygame.display.flip()        
-                    
+            pygame.display.flip()
+   
     def quit(self):
         pygame.quit()
         sys.exit()
-        
+    
     def draw(self):
-            self.surface.fill(self.BGCOLOR)
-            #self.startButton.draw(self.surface)        
+        self.surface.fill(self.BGCOLOR)
+        self.startButton.draw(self.surface)
+        
 if __name__=="__main__":
-    game = Game()
-    game.main()
+        game = Game()
+        game.main()
